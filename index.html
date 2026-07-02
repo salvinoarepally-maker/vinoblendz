@@ -855,12 +855,14 @@
     <span class="marquee-item">Shape Up</span>
     <span class="marquee-item">Beard Trim</span>
     <span class="marquee-item">Hair Design</span>
-    <span class="marquee-item">Edge Up</span>
+    <span class="marquee-item">Weekdays</span>
+    <span class="marquee-item">After Hours</span>
     <span class="marquee-item">Classic Cut</span>
     <span class="marquee-item">Shape Up</span>
     <span class="marquee-item">Beard Trim</span>
     <span class="marquee-item">Hair Design</span>
-    <span class="marquee-item">Edge Up</span>
+    <span class="marquee-item">Weekdays</span>
+    <span class="marquee-item">After Hours</span>
   </div>
 </div>
 
@@ -879,42 +881,47 @@
         <div class="services-grid" id="services-grid">
           <div class="service-card" data-name="Classic Cut" data-price="20" data-duration="45 min" onclick="selectService(this)">
             <div class="service-name">Classic Cut</div>
-            <div class="service-duration">45 min</div>
+            <div class="service-duration">scissor cut top + fade</div>
             <div class="service-price">&pound;20</div>
           </div>
           <div class="service-card" data-name="Shape Up" data-price="10" data-duration="15 min" onclick="selectService(this)">
             <div class="service-name">Shape Up</div>
-            <div class="service-duration">15 min</div>
+            <div class="service-duration">shape up with enhancement + pencil</div>
             <div class="service-price">&pound;10</div>
           </div>
           <div class="service-card" data-name="Beard Trim" data-price="15" data-duration="20 min" onclick="selectService(this)">
             <div class="service-name">Beard Trim</div>
-            <div class="service-duration">20 min</div>
+            <div class="service-duration">trim + fade + lineup</div>
             <div class="service-price">&pound;15</div>
           </div>
           <div class="service-card" data-name="Cut + Beard" data-price="25" data-duration="60 min" onclick="selectService(this)">
             <div class="service-name">Cut + Beard</div>
-            <div class="service-duration">60 min</div>
+            <div class="service-duration">classic cut + beard trim</div>
             <div class="service-price">&pound;25</div>
           </div>
           <div class="service-card" data-name="Cut + Shape Up" data-price="25" data-duration="60 min" onclick="selectService(this)">
             <div class="service-name">Cut + Shape Up</div>
-            <div class="service-duration">60 min</div>
+            <div class="service-duration">classic cut + shape up</div>
             <div class="service-price">&pound;25</div>
           </div>
           <div class="service-card" data-name="Hair Design" data-price="25" data-duration="60 min" onclick="selectService(this)">
             <div class="service-name">Hair Design</div>
-            <div class="service-duration">60 min</div>
+            <div class="service-duration">classic cut + design</div>
             <div class="service-price">&pound;25</div>
           </div>
           <div class="service-card" data-name="Cut + Shapeup + Beard" data-price="30" data-duration="75 min" onclick="selectService(this)">
             <div class="service-name">Cut + Shapeup + Beard</div>
-            <div class="service-duration">75 min</div>
+            <div class="service-duration">classic cut + shape up + beard trim</div>
             <div class="service-price">&pound;30</div>
+          </div>
+          <div class="service-card" data-name="Weekdays" data-price="25" data-duration="Varies" onclick="selectService(this)">
+            <div class="service-name">Weekdays</div>
+            <div class="service-duration">only select after school hours during term time &ndash; message vino for details</div>
+            <div class="service-price">&pound;25</div>
           </div>
           <div class="service-card after-hours-card" data-name="After Hours" data-price="30" data-duration="Varies" onclick="selectService(this)">
             <div class="service-name">After Hours</div>
-            <div class="service-duration">Weekdays 5PM&ndash;11PM &amp; Weekends 8PM&ndash;11PM</div>
+            <div class="service-duration">8pm&ndash;11pm anyday</div>
             <div class="service-price">&pound;30</div>
           </div>
         </div>
@@ -1095,7 +1102,7 @@
       const isSunday = thisDate.getDay() === 0;
 
       if (isToday) el.classList.add('today');
-      if (isPast || isSunday) {
+      if (isPast) {
         el.classList.add('past');
       } else {
         el.onclick = () => selectDate(el, d);
@@ -1133,8 +1140,16 @@
 
   // TIME SLOTS
   const REGULAR_TIMES = ['9:00 AM','9:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM'];
-  const AFTER_HOURS_TIMES = ['5:00 PM','5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM','8:30 PM','9:00 PM','9:30 PM','10:00 PM','10:30 PM','11:00 PM'];
+  const AFTER_HOURS_TIMES = ['8:00 PM','8:30 PM','9:00 PM','9:30 PM','10:00 PM','10:30 PM','11:00 PM'];
+  const SUNDAY_TIMES = ['1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM','6:00 PM','6:30 PM','7:00 PM','7:30 PM','8:00 PM'];
   const ALL_TIMES = [...REGULAR_TIMES, ...AFTER_HOURS_TIMES];
+
+  function getTimesForDate() {
+    if (!state.date) return ALL_TIMES;
+    const d = new Date(state.date.y, state.date.m, state.date.d);
+    if (d.getDay() === 0) return SUNDAY_TIMES;
+    return ALL_TIMES;
+  }
 
   function isAfterHoursSlot(t) {
     return AFTER_HOURS_TIMES.includes(t);
@@ -1177,7 +1192,7 @@
 
     function buildSlots(booked) {
       container.innerHTML = '';
-      ALL_TIMES.forEach((t) => {
+      getTimesForDate().forEach((t) => {
         const el = document.createElement('div');
         el.className = 'time-slot';
         el.textContent = t;

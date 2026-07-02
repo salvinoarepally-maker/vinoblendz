@@ -1315,7 +1315,10 @@
     document.getElementById('confirm-sms-link-hidden').href = `sms:${phone}?body=${confirmBody}`;
 
     // Monzo payment link with correct amount
-    const monzoLink = `https://monzo.me/salvinoarepally/${state.servicePrice}?d=VinoBlendz+Booking+-+${encodeURIComponent(state.service)}`;
+    const bookingDate = state.date ? `${state.date.d}/${state.date.m+1}/${state.date.y}` : '';
+    const bookingTime = state.time || '';
+    const monzoRef = `VinoBlendz - ${state.service} - ${bookingDate} ${bookingTime}`;
+    const monzoLink = `https://monzo.me/salvinoarepally/${state.servicePrice}?d=${encodeURIComponent(monzoRef)}`;
     document.getElementById('monzo-link').href = monzoLink;
 
     // Save booking to Firebase
